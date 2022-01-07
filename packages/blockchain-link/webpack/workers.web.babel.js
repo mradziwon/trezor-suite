@@ -43,5 +43,8 @@ module.exports = {
     performance: {
         hints: false,
     },
+    optimization: {
+        minimize: false,
+    },
     plugins: [new webpack.NormalModuleReplacementPlugin(/^ws$/, 'ws-browser')],
 };
