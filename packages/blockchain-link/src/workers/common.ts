@@ -202,8 +202,9 @@ class WorkerCommon {
     }
 
     removeEmpty(obj: Response) {
-        Object.keys(obj).forEach(key => {
-            if (Array.isArray(obj[key])) obj[key].map(o => this.removeEmpty(o));
+        Object.keys(obj).forEach(k => {
+            const key = k as keyof Response;
+            if (Array.isArray(obj[key])) obj[key].map((o: any) => this.removeEmpty(o));
             if (obj[key] && typeof obj[key] === 'object') this.removeEmpty(obj[key]);
             else if (obj[key] === undefined) delete obj[key];
         });
@@ -212,9 +213,12 @@ class WorkerCommon {
 
     debug(...args: any[]) {
         if (this.settings && this.settings.debug) {
-            if (args[0] === 'warn' || args[0] === 'error') {
+            if (args[0] === 'warn') {
                 // eslint-disable-next-line no-console
-                console[args[0]](this.debugPrefix, ...args.slice(1));
+                console.warn(this.debugPrefix, ...args.slice(1));
+            } else if (args[0] === 'error') {
+                // eslint-disable-next-line no-console
+                console.error(this.debugPrefix, ...args.slice(1));
             } else {
                 // eslint-disable-next-line no-console
                 console.log(this.debugPrefix, ...args);
