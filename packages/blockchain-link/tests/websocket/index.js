@@ -13,7 +13,7 @@ const DEFAULT_RESPONSES = {
 
 const create = async type => {
     const port = await getFreePort();
-    const server = new Server({ port, noServer: true });
+    const server = new Server({ port });
     const { close } = server;
 
     const defaultResponses = DEFAULT_RESPONSES[type];
