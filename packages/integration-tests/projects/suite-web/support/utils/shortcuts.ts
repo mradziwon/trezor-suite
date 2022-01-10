@@ -85,3 +85,25 @@ export const passThroughSetPin = () => {
     cy.task('pressYes');
     cy.getTestElement('@onboarding/pin/continue-button').click();
 };
+
+export const enableRegtestAndGetCoins = ({ payments = [] }) => {
+    cy.getTestElement('@suite/menu/settings').click();
+    cy.getTestElement('@suite/menu/settings-coins').click();
+    cy.getTestElement('@settings/wallet/network/btc').should('be.checked');
+    cy.getTestElement('@settings/wallet/network/regtest').click({ force: true });
+    cy.hoverTestElement('@settings/wallet/regtest/row');
+    cy.getTestElement('@settings/wallet/network/regtest/advance').click();
+
+    // send 1 regtest bitcoin to first address in the derivation path
+    payments.forEach(payment => {
+        cy.task('sendToAddressAndMineBlock', {
+            address: payment.address,
+            btc_amount: payment.amount,
+        });
+    });
+    cy.task('mineBlocks', { block_amount: 1 });
+
+    cy.getTestElement('@settings/advance/url').type('http://localhost:19121');
+    cy.getTestElement('@settings/advance/button/add').click({ force: true });
+    cy.getTestElement('@modal/close-button').click();
+};

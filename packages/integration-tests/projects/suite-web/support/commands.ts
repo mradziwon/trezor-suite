@@ -21,6 +21,7 @@ import {
     passThroughBackupShamir,
     passThroughInitMetadata,
     passThroughSetPin,
+    enableRegtestAndGetCoins,
 } from './utils/shortcuts';
 
 const command = require('cypress-image-snapshot/command');
@@ -85,6 +86,9 @@ declare global {
             passThroughSetPin: () => Chainable<Subject>;
             passThroughInitMetadata: (provider: 'dropbox' | 'google') => Chainable<Subject>;
             goToOnboarding: () => Chainable<Subject>;
+            enableRegtestAndGetCoins: (params: {
+                payments: { address: string; amount: number }[];
+            }) => Chainable<Subject>;
             skipOn: (nameOrFlag: string | boolean, cb?: () => void) => Cypress.Chainable<any>;
             onlyOn: (nameOrFlag: string | boolean, cb?: () => void) => Cypress.Chainable<any>;
         }
@@ -129,6 +133,7 @@ Cypress.Commands.add('passThroughBackup', passThroughBackup);
 Cypress.Commands.add('passThroughBackupShamir', passThroughBackupShamir);
 Cypress.Commands.add('passThroughInitMetadata', passThroughInitMetadata);
 Cypress.Commands.add('passThroughSetPin', passThroughSetPin);
+Cypress.Commands.add('enableRegtestAndGetCoins', enableRegtestAndGetCoins);
 // redux
 Cypress.Commands.add('dispatch', dispatch);
 // skip tests conditionally
