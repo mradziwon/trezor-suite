@@ -25,7 +25,11 @@ describe('Dashboard with regtest', () => {
 
         cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@suite/menu/settings-coins').click();
-        cy.getTestElement('@settings/wallet/network/btc').should('be.checked');
+        cy.getTestElement('@settings/wallet/network/btc').should(
+            'have.attr',
+            'data-active',
+            'true',
+        );
         cy.getTestElement('@settings/wallet/network/regtest').click({ force: true });
         cy.getTestElement('@settings/wallet/network/regtest/advance').click({ force: true });
 
@@ -36,9 +40,11 @@ describe('Dashboard with regtest', () => {
         });
         cy.task('mineBlocks', { block_amount: 1 });
 
+        cy.getTestElement('@settings/advance/select-type/input').click();
+        cy.getTestElement('@settings/advance/select-type/option/blockbook').click();
+
         cy.getTestElement('@settings/advance/url').type('http://localhost:19121');
-        cy.getTestElement('@settings/advance/button/add').click({ force: true });
-        cy.getTestElement('@modal/close-button').click();
+        cy.getTestElement('@settings/advance/button/save').click({ force: true });
 
         cy.getTestElement('@suite/menu/suite-index').click();
         cy.getTestElement('@wallet/coin-balance/value-regtest').should('exist');
