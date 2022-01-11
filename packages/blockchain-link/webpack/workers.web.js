@@ -1,19 +1,18 @@
-import { SRC, BUILD } from './constants';
+const webpack = require('webpack');
+const { SRC, BUILD } = require('./constants');
 
 module.exports = {
-    target: 'node',
+    target: 'webworker',
     mode: 'production',
     entry: {
-        'blockbook-worker': `${SRC}workers/blockbook/index.ts`,
         'ripple-worker': `${SRC}workers/ripple/index.ts`,
+        'blockbook-worker': `${SRC}workers/blockbook/index.ts`,
         'blockfrost-worker': `${SRC}workers/blockfrost/index.ts`,
     },
     output: {
         filename: '[name].js',
-        path: `${BUILD}module/`,
+        path: `${BUILD}web/`,
         publicPath: './',
-        libraryTarget: 'umd',
-        libraryExport: 'default',
     },
     module: {
         rules: [
@@ -23,7 +22,7 @@ module.exports = {
                 use: [
                     {
                         loader: 'ts-loader',
-                        options: { configFile: 'tsconfig.lib.json' },
+                        options: { configFile: 'tsconfig.workers.json' },
                     },
                 ],
             },
@@ -33,6 +32,11 @@ module.exports = {
         modules: [SRC, 'node_modules'],
         extensions: ['.ts', '.js'],
         mainFields: ['main', 'module'], // prevent wrapping default exports by harmony export (bignumber.js in ripple issue)
+        fallback: {
+            https: false, // required by ripple-lib
+            crypto: require.resolve('crypto-browserify'),
+            stream: require.resolve('stream-browserify'),
+        },
     },
     performance: {
         hints: false,
@@ -40,6 +44,5 @@ module.exports = {
     optimization: {
         minimize: false,
     },
-    // ignore optional modules, dependencies of "ws" lib
-    externals: ['utf-8-validate', 'bufferutil'],
+    plugins: [new webpack.NormalModuleReplacementPlugin(/^ws$/, `${SRC}/utils/ws`)],
 };
