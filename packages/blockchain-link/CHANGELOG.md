@@ -1,3 +1,11 @@
+# 2.0.0 (not released)
+
+#### changes
+- refactored workers exported as module.
+- updated dependencies.
+- updated lib targets to es2017 (less polyfill from typescript transpilation).
+- removed "build" directory from npm.
+
 # 1.0.18 (not released)
 
 #### changes
